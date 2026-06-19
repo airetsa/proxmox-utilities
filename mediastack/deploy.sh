@@ -69,5 +69,5 @@ else
 fi
 
 Section "Starting remaining services..."
-docker compose -f "$SCRIPT_DIR/docker-compose.yml" up -d
+docker compose -f up -d
 success "mediastack is up"
