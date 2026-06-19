@@ -12,7 +12,7 @@ services:
       - WIREGUARD_ADDRESSES=${MULLVAD_ADDRESS}
       - SERVER_COUNTRIES=${MULLVAD_SERVER_COUNTRY}
     ports:
-      - "127.0.0.1:8080:8080"    # qBittorrent Web UI
+      - "8080:8080"    # qBittorrent Web UI
     volumes:
       - /opt/mediastack/config/gluetun:/gluetun
     restart: unless-stopped
@@ -43,7 +43,7 @@ services:
     volumes:
       - /opt/mediastack/config/prowlarr:/config
     ports:
-      - "127.0.0.1:9696:9696"
+      - "9696:9696"
     restart: unless-stopped
 
   lidarr:
@@ -58,7 +58,7 @@ services:
       - /opt/mediastack/media/music:/music
       - /opt/mediastack/torrents/music:/torrents/music
     ports:
-      - "127.0.0.1:8686:8686"
+      - "8686:8686"
     restart: unless-stopped
 
   jellyfin:
