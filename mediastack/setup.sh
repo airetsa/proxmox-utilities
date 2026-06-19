@@ -129,6 +129,9 @@ fi
 #     └── music/
 mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,qbittorent,gluetun},torrents/music,media/music}
 
+sudo chown -R $USER:$USER /opt/mediastack/
+sudo chmod -R a=,a+rX,u+w,g+w /opt/mediastack/
+
 # Security and Networking
 # =============================================================================
 section "Firewall (UFW)"
