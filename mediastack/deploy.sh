@@ -68,6 +68,6 @@ else
     error "Exit IP check failed — not routing through Mullvad. Aborting."
 fi
 
-Section "Starting remaining services..."
-docker compose -f up -d
+section "Starting remaining services..."
+docker compose -f "$SCRIPT_DIR/docker-compose.yml" up -d
 success "mediastack is up"
