@@ -123,11 +123,11 @@ fi
 # │   ├── prowlarr/
 # │   ├── qbittorrent/
 # │   └── gluetun/
-# ├── torrents/
+# ├── downloads/
 # │   └── music/
 # └── media/
 #     └── music/
-mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,qbittorent,gluetun},torrents/music,media/music}
+mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,qbittorent,gluetun},downloads/music,media/music}
 
 sudo chown -R $USER:$USER /opt/mediastack/
 sudo chmod -R a=,a+rX,u+w,g+w /opt/mediastack/
@@ -150,7 +150,7 @@ if ufw status | grep -q "Status: inactive"; then
     ufw allow 8096/tcp comment 'Jellyfin'
 
     ufw --force enable
-    success "UFW enabled with rules for SSH, Tailscale, Jellyfin, Lidarr, Prowlarr, qBittorrent"
+    success "UFW enabled with rules for SSH, Tailscale, Jellyfin"
 else
     log "UFW already active"
     success "Skipping firewall configuration..."
