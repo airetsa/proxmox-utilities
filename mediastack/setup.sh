@@ -1,30 +1,31 @@
 #!/usr/bin/env bash
 # =============================================================================
-# mediastack | bootstrap.sh
+# mediastack | setup.sh
 # Run once on install on new Ubuntu Server VM (Made for 22.04.04)
 # =============================================================================
 
 
 # Script Setup
 # =============================================================================
+# Failure Prep
 # -e = exit immediatly if anyting fails
 # -u = treats unset variables as an error
 # -o pipefail = whole pipeline fails if any part of it fails
 set -euo pipefail
 
-# Colors
+# Formatting
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
-
 log()     { echo -e "${BLUE}[INFO]${NC}  $*"; }
 success() { echo -e "${GREEN}[OK]${NC}    $*"; }
 warn()    { echo -e "${YELLOW}[WARN]${NC}  $*"; }
 section() { echo -e "\n${BOLD}${CYAN}══ $* ══${NC}"; }
 
+# Variables
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REAL_USER="${SUDO_USER:-$USER}"
 
@@ -111,8 +112,22 @@ else
     success "Tailscale installed and daemon started"
 fi
 warn "Tailscale is installed but NOT yet connected to your network."
-warn "Run this manually after bootstrap.sh successfully finishes: sudo tailscale up"
 
+
+## Directory Setup
+# =============================================================================
+# /opt/mediastack/
+# ├── config/
+# │   ├── jellyfin/
+# │   ├── lidarr/
+# │   ├── prowlarr/
+# │   ├── qbittorrent/
+# │   └── gluetun/
+# ├── torrents/
+# │   └── music/
+# └── media/
+#     └── music/
+mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,qbittorent,gluetun},torrents/music,media/music}
 
 # Security and Networking
 # =============================================================================
@@ -124,27 +139,29 @@ if ufw status | grep -q "Status: inactive"; then
     ufw default deny incoming
     ufw default allow outgoing
     ufw allow ssh
+
+    # Allow Tailscale
     ufw allow in on tailscale0
-    ufw allow "${IMMICH_PORT}/tcp" comment 'Immich'
-    ufw allow "${JELLYFIN_PORT}/tcp" comment 'Jellyfin HTTP'
-    ufw allow "${JELLYFIN_HTTPS_PORT}/tcp" comment 'Jellyfin HTTPS'
+
+    # Jellyfin
+    ufw allow 8096/tcp comment 'Jellyfin'
+
     ufw --force enable
-    success "UFW enabled with rules for SSH, Tailscale, Immich (:${IMMICH_PORT}), Jellyfin (:${JELLYFIN_PORT})"
+    success "UFW enabled with rules for SSH, Tailscale, Jellyfin, Lidarr, Prowlarr, qBittorrent"
 else
-    log "UFW already active — adding mediastack rules..."
-    ufw allow "${IMMICH_PORT}/tcp" comment 'Immich' 2>/dev/null || true
-    ufw allow "${JELLYFIN_PORT}/tcp" comment 'Jellyfin HTTP' 2>/dev/null || true
-    success "Firewall rules successfully added"
+    log "UFW already active"
+    success "Skipping firewall configuration..."
 fi
 
 
 # :3 Completion :3
 # =============================================================================
 echo ""
-echo -e "${BOLD}${GREEN}Script bootstrap.sh complete.{NC}"
+echo -e "${BOLD}${GREEN}Script setup.sh complete.{NC}"
 echo ""
 echo -e "  Next steps:"
 echo -e "  1. Connect Tailscale:    sudo tailscale up"
 echo -e "  2. Log out and back in   (picks up docker group)"
-echo -e "  3. Run startup:          sudo bash startup.sh"
+echo -e "  3. Run deployment        deploy.sh"
 echo ""
+

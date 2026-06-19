@@ -1,0 +1,74 @@
+services:
+
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: ${GLUETUN_CONTAINER_NAME}
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${MULLVAD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${MULLVAD_ADDRESS}
+      - SERVER_COUNTRIES=${MULLVAD_SERVER_COUNTRY}
+    ports:
+      - "127.0.0.1:8080:8080"    # qBittorrent Web UI
+    volumes:
+      - /opt/mediastack/config/gluetun:/gluetun
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: ${QBITTORRENT_CONTAINER_NAME}
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+    volumes:
+      - /opt/mediastack/config/qbittorrent:/config
+      - /opt/mediastack/torrents:/torrents
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: ${PROWLARR_CONTAINER_NAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/prowlarr:/config
+    ports:
+      - "127.0.0.1:9696:9696"
+    restart: unless-stopped
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: ${LIDARR_CONTAINER_NAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/lidarr:/config
+      - /opt/mediastack/media/music:/music
+      - /opt/mediastack/torrents/music:/torrents/music
+    ports:
+      - "127.0.0.1:8686:8686"
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: ${JELLYFIN_CONTAINER_NAME}
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/jellyfin:/config
+      - /opt/mediastack/media/music:/music:ro
+    ports:
+      - "8096:8096"
+    restart: unless-stopped
