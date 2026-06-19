@@ -71,3 +71,19 @@ fi
 section "Starting remaining services..."
 docker compose -f "$SCRIPT_DIR/docker-compose.yml" up -d
 success "mediastack is up"
+
+# Completion
+# =============================================================================
+echo ""
+echo -e "${BOLD}${GREEN}Script deploy.sh complete.{NC}"
+echo ""
+echo -e "${BOLD}Port Access Legend${NC}"
+echo ""
+echo -e "  Jellyfin   → http://<vm-ip>:8096"
+echo -e "  Lidarr     → http://<vm-ip>:8686"
+echo -e "  Prowlarr   → http://<vm-ip>:9696"
+echo -e "  qBittorrent→ http://<vm-ip>:8080"
+echo ""
+echo -e "  Replace <vm-ip> with your VM's LAN IP or Tailscale IP."
+echo -e "  Tailscale-only ports are bound to 127.0.0.1 and not reachable from LAN."
+echo ""
