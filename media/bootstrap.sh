@@ -46,6 +46,13 @@ else
     error ".env file not found in $SCRIPT_DIR — copy .env.example and edit it first"
 fi
 
+# Sanity check key variables
+[[ "$DB_PASSWORD" == "change_me_please" ]] && \
+    error "Please set a real DB_PASSWORD in your .env file before running setup"
+ 
+[[ -z "${MEDIASTACK_ROOT:-}" ]] && error "MEDIASTACK_ROOT is not set in .env"
+
+
 # Ubuntu Essentials
 section "Installing Packages"
 apt-get install -y -qq \

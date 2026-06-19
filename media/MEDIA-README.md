@@ -8,18 +8,18 @@ Self-hosted media server on Ubuntu / Proxmox.
 ## Quick Start
 
 ```bash
-# 1. Copy to your VM (from your machine, or clone/download directly on the VM)
-scp -r mediastack/ user@YOUR_VM_IP:~/mediastack
+# 1. Run bootstrap.sh to install all required services
+sudo bash bootstrap.sh
 
-# 2. SSH into the VM
-ssh user@YOUR_VM_IP
+# 2. Setup Tailscale by connecting the VM to your Tailnet
+sudo tailscale up
 
 # 3. Edit .env — set your password and timezone at minimum
-nano ~/mediastack/.env
+vi ~/mediastack/.env
 
 # 4. Run setup (takes ~5 min first time — pulls Docker images)
 cd ~/mediastack
-sudo bash setup.sh
+vi bash setup.sh
 ```
 
 ---
