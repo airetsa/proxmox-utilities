@@ -61,7 +61,7 @@ success "VPN tunnel is up"
 
 # Verify Mullvad exit IP
 log "Verifying exit IP..."
-RESULT=$(docker exec "$QBITTORRENT_CONTAINER_NAME" curl -s https://am.i.mullvad.net/json 2>/dev/null || true)
+RESULT=$(docker exec "$GLUETUN_CONTAINER_NAME" wget -qO- https://am.i.mullvad.net/json 2>/dev/null || true)
 if echo "$RESULT" | grep -q '"mullvad_exit_ip":true'; then
     success "Confirmed exit through Mullvad"
 else
