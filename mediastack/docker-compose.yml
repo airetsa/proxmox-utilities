@@ -25,7 +25,6 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-
     volumes:
       - /opt/mediastack/downloads/music:/downloads
     depends_on:

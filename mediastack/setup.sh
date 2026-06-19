@@ -130,7 +130,8 @@ fi
 #     └── music/
 mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,qbittorent,filebrowser,gluetun},downloads/music,media/music}
 
-sudo chown -R $USER:$USER /opt/mediastack/
+#sudo chown -R $USER:$USER /opt/mediastack/
+sudo chown -R $PUID:$GUID /opt/mediastack/
 sudo chmod -R a=,a+rX,u+w,g+w /opt/mediastack/
 
 # Security and Networking
