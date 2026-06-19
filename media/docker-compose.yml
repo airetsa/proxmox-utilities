@@ -105,16 +105,15 @@ services:
       TZ: ${TZ:-UTC}
     networks:
       - mediastack
-    # Optional: hardware transcoding (uncomment ONE block that matches your GPU)
-    #
-    # Intel Quick Sync:
-    # devices:
-    #   - /dev/dri:/dev/dri
-    #
-    # NVIDIA (also uncomment runtime below):
+
     runtime: nvidia
-    environment:
-      NVIDIA_VISIBLE_DEVICES: all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
 # =============================================================================
 # *ARR SUITE  —  uncomment when ready
