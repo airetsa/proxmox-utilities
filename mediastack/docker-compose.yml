@@ -19,7 +19,7 @@ services:
 
   metube:
     image: ghcr.io/alexta69/metube
-    container_name: metube
+    container_name: ${METUBE_CONTAINER_NAME}
     network_mode: "service:gluetun"
     environment:
       - PUID=${PUID}
@@ -27,7 +27,7 @@ services:
       - TZ=${TZ}
 
     volumes:
-      - /opt/mediastack/downloads:/downloads
+      - /opt/mediastack/downloads/music:/downloads
     depends_on:
       - gluetun
     restart: unless-stopped
@@ -76,16 +76,16 @@ services:
   #     - "8686:8686"
   #   restart: unless-stopped
 
-  # filebrowser:
-  #   image: filebrowser/filebrowser
-  #   container_name: ${FILEBROWSER_CONTAINER_NAME}
-  #   volumes:
-  #     - /opt/mediastack/config/filebrowser/data:/srv
-  #     - /opt/mediastack/config/filebrowser/database:/database
-  #     - /opt/mediastack/config/filebrowser/config:/config
-  #   ports:
-  #     - "8080:80"
-  #   restart: unless-stopped
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: ${FILEBROWSER_CONTAINER_NAME}
+    volumes:
+      - /opt/mediastack:/srv
+      - /opt/mediastack/config/filebrowser/database:/database
+      - /opt/mediastack/config/filebrowser/config:/config
+    ports:
+      - "8082:80"
+    restart: unless-stopped
 
   jellyfin:
     image: jellyfin/jellyfin:latest
