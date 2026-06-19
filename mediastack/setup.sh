@@ -110,8 +110,8 @@ else
     curl -fsSL https://tailscale.com/install.sh | sh
     systemctl enable --now tailscaled
     success "Tailscale installed and daemon started"
+    warn "Tailscale is installed but NOT yet connected to your network."
 fi
-warn "Tailscale is installed but NOT yet connected to your network."
 
 
 ## Directory Setup
@@ -160,7 +160,7 @@ echo ""
 echo -e "${BOLD}${GREEN}Script setup.sh complete.{NC}"
 echo ""
 echo -e "  Next steps:"
-echo -e "  1. Connect Tailscale:    sudo tailscale up"
+echo -e "  1. Connect Tailscale:    sudo tailscale up (only if necessary)"
 echo -e "  2. Log out and back in   (picks up docker group)"
 echo -e "  3. Run deployment        deploy.sh"
 echo ""

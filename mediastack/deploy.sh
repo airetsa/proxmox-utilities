@@ -50,9 +50,9 @@ docker compose -f "$SCRIPT_DIR/docker-compose.yml" up -d gluetun
 # Wait loop for VPN tunnel setup
 log "Waiting for VPN tunnel..."
 ELAPSED=0
-until docker logs "$GLUETUN_CONTAINER_NAME" 2>&1 | grep -q "VPN tunnel is up"; do
+until [ "$(docker inspect --format='{{.State.Health.Status}}' "$GLUETUN_CONTAINER_NAME")" = "healthy" ]; do
     if [ "$ELAPSED" -ge "$MAX_WAIT" ]; then
-        error "Gluetun did not connect after ${MAX_WAIT}s. Check: docker logs $GLUETUN_CONTAINER_NAME"
+        error "Gluetun did not become healthy after ${MAX_WAIT}s. Check: docker logs $GLUETUN_CONTAINER_NAME"
     fi
     sleep 2
     ELAPSED=$((ELAPSED + 2))
