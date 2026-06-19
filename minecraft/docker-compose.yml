@@ -1,0 +1,112 @@
+services:
+
+  # ─────────────────────────────────────────────
+  # WireGuard VPN (wg-easy web UI)
+  # Web UI:  http://<VM-IP>:51821
+  # Tunnel:  UDP 51820 (forward this on your router)
+  # ─────────────────────────────────────────────
+  wg-easy:
+    image: ghcr.io/wg-easy/wg-easy
+    container_name: wg-easy
+    restart: unless-stopped
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    environment:
+      - WG_HOST=${WG_HOST}
+      - PASSWORD_HASH=${WG_PASSWORD_HASH}
+      - WG_DEFAULT_DNS=${WG_DNS}
+      - WG_ALLOWED_IPS=${WG_ALLOWED_IPS}
+      - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
+    volumes:
+      - ./wg-data:/etc/wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
+    networks:
+      - vpnnet
+
+  # ─────────────────────────────────────────────
+  # Vanilla / Paper server
+  # Friends connect to: 10.8.0.1:25565 (over VPN)
+  # ─────────────────────────────────────────────
+  mc-vanilla:
+    image: itzg/minecraft-server
+    container_name: mc-vanilla
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: ${VANILLA_VERSION}
+      INIT_MEMORY: ${VANILLA_INIT_MEMORY}
+      MAX_MEMORY: ${VANILLA_MAX_MEMORY}
+      DIFFICULTY: ${VANILLA_DIFFICULTY}
+      MAX_PLAYERS: ${VANILLA_MAX_PLAYERS}
+      MOTD: ${VANILLA_MOTD}
+      # Uncomment to whitelist players:
+      # WHITELIST: ${VANILLA_WHITELIST}
+      # OPS: ${VANILLA_OPS}
+    volumes:
+      - ./vanilla/data:/data
+    networks:
+      - vpnnet
+
+  # ─────────────────────────────────────────────
+  # Modded server (Forge + CurseForge)
+  # Friends connect to: 10.8.0.1:25566 (over VPN)
+  # ─────────────────────────────────────────────
+  mc-modded:
+    image: itzg/minecraft-server
+    container_name: mc-modded
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "25566:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "AUTO_CURSEFORGE"
+      CF_API_KEY: ${CF_API_KEY}
+      CF_SLUG: ${CF_SLUG}
+      # VERSION and FORGE_VERSION are auto-detected from the modpack.
+      # Uncomment to pin to a specific version:
+      # VERSION: ${MODDED_VERSION}
+      # FORGE_VERSION: ${MODDED_FORGE_VERSION}
+      INIT_MEMORY: ${MODDED_INIT_MEMORY}
+      MAX_MEMORY: ${MODDED_MAX_MEMORY}
+      DIFFICULTY: ${MODDED_DIFFICULTY}
+      MAX_PLAYERS: ${MODDED_MAX_PLAYERS}
+      MOTD: ${MODDED_MOTD}
+      # Uncomment to whitelist players:
+      # WHITELIST: ${MODDED_WHITELIST}
+      # OPS: ${MODDED_OPS}
+    volumes:
+      - ./modded/data:/data
+    networks:
+      - vpnnet
+
+networks:
+  vpnnet:
+    driver: bridge
+
+# ─────────────────────────────────────────────
+# Directory structure this creates:
+#
+#   ./wg-data/          WireGuard config & peer keys
+#   ./vanilla/data/     Vanilla world, server.properties, plugins
+#   ./modded/data/      Modded world, server.properties, mods
+#
+# Useful commands:
+#   Start all:          docker compose up -d
+#   Watch logs:         docker compose logs -f mc-vanilla
+#   Server console:     docker attach mc-vanilla  (Ctrl+P then Ctrl+Q to detach)
+#   Stop all:           docker compose down
+#   Restart one:        docker compose restart mc-modded
+# ─────────────────────────────────────────────

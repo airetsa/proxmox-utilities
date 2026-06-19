@@ -112,9 +112,9 @@ services:
     #   - /dev/dri:/dev/dri
     #
     # NVIDIA (also uncomment runtime below):
-    # runtime: nvidia
-    # environment:
-    #   NVIDIA_VISIBLE_DEVICES: all
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
 
 # =============================================================================
 # *ARR SUITE  —  uncomment when ready
