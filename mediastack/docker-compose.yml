@@ -12,7 +12,7 @@ services:
       - SERVER_COUNTRIES=${MULLVAD_SERVER_COUNTRY}
     ports:
       - "8081:8081"    # metube
-#      - "8080:8080"    # qbittorrent
+      - "8080:8080"    # qbittorrent
     volumes:
       - /opt/mediastack/config/gluetun:/gluetun
     restart: unless-stopped
@@ -31,34 +31,49 @@ services:
       - gluetun
     restart: unless-stopped
 
-  # qbittorrent:
-  #   image: lscr.io/linuxserver/qbittorrent:latest
-  #   container_name: ${QBITTORRENT_CONTAINER_NAME}
-  #   network_mode: "service:gluetun"
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #     - WEBUI_PORT=8080
-  #   volumes:
-  #     - /opt/mediastack/config/qbittorrent:/config
-  #     - /opt/mediastack/downloads:/downloads
-  #   depends_on:
-  #     - gluetun
-  #   restart: unless-stopped
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: ${QBITTORRENT_CONTAINER_NAME}
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+    volumes:
+      - /opt/mediastack/config/qbittorrent:/config
+      - /opt/mediastack/downloads:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
 
-  # prowlarr:
-  #   image: lscr.io/linuxserver/prowlarr:latest
-  #   container_name: ${PROWLARR_CONTAINER_NAME}
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #   volumes:
-  #     - /opt/mediastack/config/prowlarr:/config
-  #   ports:
-  #     - "9696:9696"
-  #   restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: ${PROWLARR_CONTAINER_NAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/prowlarr:/config
+    ports:
+      - "9696:9696"
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: ${SONARR_CONTAINER_NAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/sonarr:/config
+      - /opt/mediastack/media/tv:/tv
+      - /opt/mediastack/downloads/tv:/downloads/tv
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
 
   # lidarr:
   #   image: lscr.io/linuxserver/lidarr:latest
