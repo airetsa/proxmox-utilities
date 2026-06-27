@@ -75,7 +75,7 @@ services:
     volumes:
       - /opt/mediastack/config/sonarr:/config
       - /opt/mediastack/media/tv:/tv
-      - /opt/mediastack/downloads/tv:/downloads/tv
+      - /opt/mediastack/downloads:/downloads
     depends_on:
       - gluetun
     restart: unless-stopped
