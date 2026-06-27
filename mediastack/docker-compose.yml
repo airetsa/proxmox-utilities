@@ -16,6 +16,7 @@ services:
       - "9696:9696"    # prowlarr
       - "8989:8989"    # sonarr
       - "8191:8191"    # flaresolverr
+      - "6767:6767"    # bazarr
     volumes:
       - /opt/mediastack/config/gluetun:/gluetun
     restart: unless-stopped
@@ -76,6 +77,21 @@ services:
       - /opt/mediastack/config/sonarr:/config
       - /opt/mediastack/media/tv:/tv
       - /opt/mediastack/downloads:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: ${BAZARR_CONTAINER_NAME}
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/bazarr:/config
+      - /opt/mediastack/media/tv:/tv
     depends_on:
       - gluetun
     restart: unless-stopped

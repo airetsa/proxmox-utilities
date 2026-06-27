@@ -75,7 +75,7 @@ success "mediastack is up"
 # Completion
 # =============================================================================
 echo ""
-echo -e "${BOLD}${GREEN}Script deploy.sh complete.{NC}"
+echo -e "${BOLD}${GREEN}Script deploy.sh complete.${NC}"
 echo ""
 echo -e "${BOLD}Port Access Legend${NC}"
 echo ""
