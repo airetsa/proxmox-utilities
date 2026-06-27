@@ -121,16 +121,19 @@ fi
 # │   ├── jellyfin/
 # │   ├── lidarr/
 # │   ├── prowlarr/
+# │   ├── sonarr/
+# │   ├── bazarr/
 # │   ├── qbittorrent/
 # │   ├── filebrowser/
 # │   └── gluetun/
 # ├── downloads/
+# │   ├── tv/
 # │   └── music/
 # └── media/
+# │   ├── tv/
 #     └── music/
-mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,qbittorent,filebrowser,gluetun},downloads/music,media/music}
+mkdir -p /opt/mediastack/{config/{jellyfin,lidarr,prowlarr,sonarr,bazarr,qbittorent,filebrowser,gluetun},downloads/{tv,music},media/{tv,music}}
 
-#sudo chown -R $USER:$USER /opt/mediastack/
 sudo chown -R $PUID:$PGID /opt/mediastack/
 sudo chmod -R a=,a+rX,u+w,g+w /opt/mediastack/
 
