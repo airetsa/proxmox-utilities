@@ -125,7 +125,7 @@ services:
       - TZ=${TZ}
     volumes:
       - /opt/mediastack/config/jellyfin:/config
-      - /opt/mediastack/media/music:/music:ro
+      - /opt/mediastack/media:/media:ro
     ports:
       - "8096:8096"
     restart: unless-stopped
