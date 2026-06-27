@@ -15,6 +15,7 @@ services:
       - "8080:8080"    # qbittorrent
       - "9696:9696"    # prowlarr
       - "8989:8989"    # sonarr
+      - "8191:8191"    # flaresolverr
     volumes:
       - /opt/mediastack/config/gluetun:/gluetun
     restart: unless-stopped
@@ -93,6 +94,18 @@ services:
   #   ports:
   #     - "8686:8686"
   #   restart: unless-stopped
+
+  flaresolverr:
+    image: flaresolverr/flaresolverr
+    container_name: ${FLARESOLVERR_CONTAINER_NAME}
+    network_mode: "service:gluetun"
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+    depends_on:
+      - gluetun
+    restart: unless-stopped 
 
   filebrowser:
     image: filebrowser/filebrowser
