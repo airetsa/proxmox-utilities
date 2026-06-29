@@ -82,21 +82,21 @@ services:
       - gluetun
     restart: unless-stopped
 
-    radarr:
-      image: lscr.io/linuxserver/radarr:latest
-      container_name: ${RADARR_CONTAINER_NAME}
-      network_mode: "service:gluetun"
-      environment:
-        - PUID=${PUID}
-        - PGID=${PGID}
-        - TZ=${TZ}
-      volumes:
-        - /opt/mediastack/config/radarr:/config
-        - /opt/mediastack/media/movies:/movies
-        - /opt/mediastack/downloads:/downloads
-      depends_on:
-        - gluetun
-      restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: ${RADARR_CONTAINER_NAME}
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /opt/mediastack/config/radarr:/config
+      - /opt/mediastack/media/movies:/movies
+      - /opt/mediastack/downloads:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
